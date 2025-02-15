@@ -1440,10 +1440,5 @@
         ]
       }
     }
-  }],
-  "drillthrough" : {
-    "roles" : [
-      "indicator"
-    ]
-  }
+  }]
 }
