@@ -13,6 +13,7 @@ import { drawXAxis, drawYAxis, drawTooltipLine, drawLines,
 import { defaultSettingsKeys, viewModelClass, type plotData, type viewModelValidationT } from "./Classes"
 import type { plotDataGrouped } from "./Classes/viewModelClass";
 import { identitySelected } from "./Functions";
+import ISelectionId = powerbi.visuals.ISelectionId;
 
 export type svgBaseType = d3.Selection<SVGSVGElement, unknown, null, undefined>;
 export type divBaseType = d3.Selection<HTMLDivElement, unknown, null, undefined>;
@@ -86,6 +87,17 @@ export class Visual implements powerbi.extensibility.IVisual {
 
       this.updateHighlighting();
       this.host.eventService.renderingFinished(options);
+      if (this.viewModel.showGrouped || this.viewModel.inputSettings.settings.summary_table.show_table) {
+        this.resizeCanvas(0, 0);
+        this.tableDiv.call(drawSummaryTable, this);
+        
+        // Apply context menu to individual table rows for better drill-through targeting
+        this.tableDiv.selectAll("tbody tr").call(addContextMenu, this);
+      } else {
+        this.resizeCanvas(options.viewport.width, options.viewport.height);
+        this.drawVisual();
+        this.adjustPaddingForOverflow();
+      }
     } catch (caught_error) {
       this.resizeCanvas(options.viewport.width, options.viewport.height);
       this.svg.call(drawErrors, options, caught_error.message, "internal");
@@ -104,6 +116,11 @@ export class Visual implements powerbi.extensibility.IVisual {
             .call(drawIcons, this)
             .call(addContextMenu, this)
             .call(drawDownloadButton, this)
+            .call(drawValueLabels, this);
+    this.svg.call(addContextMenu, this);
+    this.svg.selectAll(".dotsgroup circle").call(addContextMenu, this);
+    
+    this.svg.call(drawDownloadButton, this)
             .call(drawValueLabels, this);
   }
 
