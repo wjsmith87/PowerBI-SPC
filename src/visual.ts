@@ -5,6 +5,7 @@ type EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInstan
 type VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnumerationObject;
 type VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 type ISelectionId = powerbi.visuals.ISelectionId;
+type ISelectionManager = powerbi.extensibility.ISelectionManager;
 import * as d3 from "./D3 Plotting Functions/D3 Modules";
 import { drawXAxis, drawYAxis, drawTooltipLine, drawLines,
           drawDots, drawIcons, addContextMenu,
@@ -72,6 +73,31 @@ export class Visual implements powerbi.extensibility.IVisual {
       if (update_status.warning) {
         this.host.displayWarningIcon("Invalid inputs or settings ignored.\n",
                                       update_status.warning);
+      }
+
+      // Drill-through logic starts here
+      let categories = DataView.categorical.categories[0];
+      let measures = DataView.categorical.values[0];
+
+      if (categories && measures) {
+          this.svg.selectAll(".drill-item").remove(); // Clear previous elements
+
+          categories.forEach((categoryValue, i) => {
+              let selectionId: ISelectionId = this.host.createSelectionIdBuilder()
+                  .withCategory({ source: { displayName: "Category" }, values: categories }, i)
+                  .createSelectionId();
+
+              let drillItem = this.svg.append("text")
+                  .attr("class", "drill-item")
+                  .attr("x", 50)
+                  .attr("y", 30 + i * 20)
+                  .attr("fill", "blue")
+                  .style("cursor", "pointer")
+                  .text(`${categoryValue}: ${measures[i]}`)
+                  .on("click", () => {
+                      this.selectionManager.select(selectionId, false);
+                  });
+          });
       }
 
       if (this.viewModel.showGrouped || this.viewModel.inputSettings.settings.summary_table.show_table) {

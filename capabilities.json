@@ -22,7 +22,7 @@
     { "displayName": "Outcome/Numerator",     "name": "numerators",   "kind": "Measure" },
     { "displayName": "Denominator",           "name": "denominators", "kind": "Measure" },
     { "displayName": "ID Key (Date)",         "name": "key",          "kind": "Grouping" },
-    { "displayName": "Grouping (Summary Table)", "name": "indicator", "kind": "Grouping", "drillthrough": true },
+    { "displayName": "Grouping (Summary Table)", "name": "indicator", "kind": "Grouping"},
     { "displayName": "Rebaseline Groupings",  "name": "groupings",    "kind": "Measure" },
     { "displayName": "SD (for xbar)",         "name": "xbar_sds",     "kind": "Measure" },
     { "displayName": "Tooltips",              "name": "tooltips",     "kind": "Measure" },
