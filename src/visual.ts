@@ -13,7 +13,6 @@ import { drawXAxis, drawYAxis, drawTooltipLine, drawLines,
 import { defaultSettingsKeys, viewModelClass, type plotData, type viewModelValidationT } from "./Classes"
 import type { plotDataGrouped } from "./Classes/viewModelClass";
 import { identitySelected } from "./Functions";
-import ISelectionId = powerbi.visuals.ISelectionId;
 
 export type svgBaseType = d3.Selection<SVGSVGElement, unknown, null, undefined>;
 export type divBaseType = d3.Selection<HTMLDivElement, unknown, null, undefined>;
